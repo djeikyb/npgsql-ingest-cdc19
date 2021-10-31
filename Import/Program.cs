@@ -4,6 +4,7 @@ using System.Diagnostics;
 using Core;
 using Core.Tsv;
 using Infra;
+using Microsoft.EntityFrameworkCore;
 
 Console.WriteLine("Hello, World!");
 
@@ -39,11 +40,12 @@ if (wasJustNowCreated)
 var ploader = new PreKnownsLoader(context);
 var preKnowns = await ploader.Load(ct);
 
-var repo = new MyRepository<CovidCase>(context);
+IPersistCases repo = new PgCopy(context);
+repo = new PgCopy(context);
 var importer = new BulkImporter(repo, preKnowns, reader);
 
 var t = new Stopwatch();
 t.Start();
-await importer.Load(maxBatchSize: 1000, maxInserts: 500_000, ct: ct);
+await importer.Load(maxBatchSize: 1_000_000, maxInserts: 5_000_000, ct: ct);
 t.Stop();
 Console.WriteLine($"Overall time: {t.Elapsed.ToString()}");

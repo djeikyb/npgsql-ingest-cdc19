@@ -4,13 +4,13 @@ namespace Core.Tsv
 {
     public class BulkImporter
     {
-        private readonly IRepository<CovidCase> _repo;
+        private readonly IPersistCases _repo;
         private readonly PreKnowns _preKnowns;
 
         private readonly StreamReader _csv;
         // private readonly RawRow _rawRow = new();
 
-        public BulkImporter(IRepository<CovidCase> repo,
+        public BulkImporter(IPersistCases repo,
             PreKnowns preKnowns,
             StreamReader csv
         )
@@ -113,6 +113,8 @@ namespace Core.Tsv
             var hundrThou = new Stopwatch();
             hundrThou.Start();
 
+            await _repo.Begin(ct);
+
             int total = 0;
             int batchNumber = 1;
             var t = new Stopwatch();
@@ -138,6 +140,8 @@ namespace Core.Tsv
 
                 batchNumber += 1;
             }
+
+            await _repo.End(ct);
         }
 
         public async Task<(int Inserted, bool NoMoreData)> Batch(int batchSize, CancellationToken ct)
@@ -162,7 +166,7 @@ namespace Core.Tsv
                 entities.Add(entity);
             }
 
-            await _repo.BulkInsert(entities, ct);
+            await _repo.Persist(entities, ct);
 
             return (Inserted: inserts, NoMoreData: eof);
         }
@@ -177,7 +181,7 @@ namespace Core.Tsv
                 entities.Add(entity);
             }
 
-            await _repo.BulkInsert(entities, ct);
+            await _repo.Persist(entities, ct);
         }
     }
 }

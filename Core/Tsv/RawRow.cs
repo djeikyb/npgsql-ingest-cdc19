@@ -2,6 +2,86 @@ namespace Core.Tsv;
 
 public class RawRow
 {
+    public void LoadV2(string row)
+    {
+        const char delim = '\t';
+        int pos = 0;
+        for (int fieldNum = 0; fieldNum < 19; fieldNum++)
+        {
+            var nextDelim = row.IndexOf(delim, pos);
+
+            var len = nextDelim != -1
+                ? nextDelim - pos
+                : row.Length - pos;
+
+            var fieldValue = row.Substring(pos, len);
+            pos += len + 1;
+
+            switch (fieldNum)
+            {
+                case 0:
+                    CaseMonth = fieldValue;
+                    break;
+                case 1:
+                    ResState = fieldValue;
+                    break;
+                case 2:
+                    StateFipsCode = fieldValue;
+                    break;
+                case 3:
+                    ResCounty = fieldValue;
+                    break;
+                case 4:
+                    CountyFipsCode = fieldValue;
+                    break;
+                case 5:
+                    AgeGroup = fieldValue;
+                    break;
+                case 6:
+                    Sex = fieldValue;
+                    break;
+                case 7:
+                    Race = fieldValue;
+                    break;
+                case 8:
+                    Ethnicity = fieldValue;
+                    break;
+                case 9:
+                    CasePositiveSpecimenInterval = fieldValue;
+                    break;
+                case 10:
+                    CaseOnsetInterval = fieldValue;
+                    break;
+                case 11:
+                    Process = fieldValue;
+                    break;
+                case 12:
+                    ExposureYn = fieldValue;
+                    break;
+                case 13:
+                    CurrentStatus = fieldValue;
+                    break;
+                case 14:
+                    SymptomStatus = fieldValue;
+                    break;
+                case 15:
+                    HospYn = fieldValue;
+                    break;
+                case 16:
+                    IcuYn = fieldValue;
+                    break;
+                case 17:
+                    DeathYn = fieldValue;
+                    break;
+                case 18:
+                    UnderlyingConditionsYn = fieldValue;
+                    break;
+                default:
+                    throw new Exception($"Unexpected field index at position {pos}: {fieldNum}. Row {row}");
+            }
+        }
+    }
+
     public void Load(string row)
     {
         var col = row.Split("\t");

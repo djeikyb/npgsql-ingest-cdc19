@@ -9,6 +9,31 @@ the time to beat!
 x = 3.56634707
 
 
+1. v2.RoughDraft
+
+1. Time
+
+...
+100000 records took 00:00:00.4597436
+100000 records took 00:00:00.4641218
+100000 records took 00:00:00.4672910
+100000 records took 00:00:00.7798506
+100000 records took 00:00:00.4700023
+Overall time: 00:02:50.3618660
+
+And then another three minutes to add foreign keys.
+
+2. Notes
+
+2.1. This was not a test
+
+Accidentally processed the entire dataset. Meant to only ingest a small
+sample. Makes the overall time much more impressive.
+
+2.2. RawRow
+
+Accidentally used the string::split version. Will have to run again to
+know if this could reduce the time. Expect less
 
 cols += "case_month";
 cols += "res_state";

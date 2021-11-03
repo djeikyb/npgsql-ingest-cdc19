@@ -13,6 +13,7 @@ public class EfExtBulk : IPersistCases
 
     public Task Begin(CancellationToken _) => Task.CompletedTask;
     public Task End(CancellationToken _) => Task.CompletedTask;
+    public Task Persist(CovidCase entity, CancellationToken ct = default) => Persist(new []{entity}, ct);
 
     public async Task Persist(IEnumerable<CovidCase> cases, CancellationToken ct)
     {

@@ -3,6 +3,7 @@
 using System.Diagnostics;
 using Core;
 using Core.Tsv;
+using Core.v3;
 using Infra;
 using Microsoft.EntityFrameworkCore;
 
@@ -28,7 +29,7 @@ using var reader = new StreamReader(fs);
 reader.ReadLine();
 
 
-var context = new PgContext();
+await using var context = new PgContext();
 
 var wasJustNowCreated = await context.Database.EnsureCreatedAsync(ct);
 if (wasJustNowCreated)
@@ -40,12 +41,15 @@ if (wasJustNowCreated)
 var ploader = new PreKnownsLoader(context);
 var preKnowns = await ploader.Load(ct);
 
-IPersistCases repo = new PgCopy(context);
-repo = new PgCopy(context);
-var importer = new BulkImporter(repo, preKnowns, reader);
+var pgCopyV1 = new PgCopy(context);
+IPersistCases repo = pgCopyV1;
+using var pgCopyV2 = new PgCopyV2(context);
+repo = pgCopyV2;
+// var importer = new BulkImporter(repo, preKnowns, reader);
+var importer = new Core.v3.RoughDraft(preKnowns, repo);
 
 var t = new Stopwatch();
 t.Start();
-await importer.Load(maxBatchSize: 1_000_000, maxInserts: 5_000_000, ct: ct);
+await importer.Load(reader, maxBatchSize: 1_000_000, maxInserts: 5_00_000, ct: ct);
 t.Stop();
 Console.WriteLine($"Overall time: {t.Elapsed.ToString()}");

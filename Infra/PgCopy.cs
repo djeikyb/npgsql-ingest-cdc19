@@ -1,6 +1,7 @@
 using System.Diagnostics;
+using System.Drawing.Imaging;
+using System.Text;
 using Core;
-using Core.Tsv;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using NpgsqlTypes;
@@ -11,6 +12,7 @@ public class PgCopyV2 : IPersistCases, IDisposable
 {
     private readonly string _connString;
     private NpgsqlBinaryImporter? _writer;
+    private NpgsqlConnection? _conn;
 
     public PgCopyV2(PgContext context)
     {
@@ -19,12 +21,12 @@ public class PgCopyV2 : IPersistCases, IDisposable
 
     public async Task Begin(CancellationToken ct)
     {
-        await using var conn = new NpgsqlConnection(_connString);
-        await conn.OpenAsync(ct);
+        _conn = new NpgsqlConnection(_connString);
+        await _conn.OpenAsync(ct);
 
         var cols = PgCopy.Columns();
         var cmd = $"COPY covid_case ({cols}) FROM STDIN (FORMAT BINARY)";
-        _writer = await conn.BeginBinaryImportAsync(cmd, ct);
+        _writer = await _conn.BeginBinaryImportAsync(cmd, ct);
     }
 
     public async Task End(CancellationToken ct)
@@ -33,7 +35,12 @@ public class PgCopyV2 : IPersistCases, IDisposable
         await _writer.CompleteAsync(ct);
     }
 
-    public async Task Persist(IEnumerable<CovidCase> entities, CancellationToken ct)
+    public Task Persist(CovidCase entity, CancellationToken ct = default)
+    {
+        return PgCopy.WriteRow(_writer!, entity, ct);
+    }
+
+    public async Task Persist(IEnumerable<CovidCase> entities, CancellationToken ct = default)
     {
         foreach (var ent in entities)
         {
@@ -41,7 +48,7 @@ public class PgCopyV2 : IPersistCases, IDisposable
         }
     }
 
-    public async Task Persist(StreamReader reader, ImportConfig config, CancellationToken ct)
+    public Task Persist(StreamReader reader, ImportConfig config, CancellationToken ct)
     {
         throw new NotImplementedException();
     }
@@ -49,6 +56,7 @@ public class PgCopyV2 : IPersistCases, IDisposable
     public void Dispose()
     {
         _writer?.Dispose();
+        _conn?.Dispose();
     }
 }
 
@@ -63,6 +71,7 @@ public class PgCopy : IPersistCases
 
     public Task Begin(CancellationToken _) => Task.CompletedTask;
     public Task End(CancellationToken _) => Task.CompletedTask;
+    public Task Persist(CovidCase entity, CancellationToken ct = default) => Persist(new []{entity}, ct);
 
     public async Task Persist(IEnumerable<CovidCase> cases, CancellationToken ct)
     {
@@ -122,33 +131,33 @@ public class PgCopy : IPersistCases
         await writer.WriteAsync(entity.ResCounty, NpgsqlDbType.Text, ct);
         await writer.WriteAsync(entity.CountyFipsCode, NpgsqlDbType.Text, ct);
 
-        await WriteNullable(writer, entity.AgeGroupId, NpgsqlDbType.Integer, ct);
-        await WriteNullable(writer, entity.SexId, NpgsqlDbType.Integer, ct);
-        await WriteNullable(writer, entity.RaceId, NpgsqlDbType.Integer, ct);
-        await WriteNullable(writer, entity.EthnicityId, NpgsqlDbType.Integer, ct);
+        await WriteNullableInt(writer, entity.AgeGroupId, ct);
+        await WriteNullableInt(writer, entity.SexId, ct);
+        await WriteNullableInt(writer, entity.RaceId, ct);
+        await WriteNullableInt(writer, entity.EthnicityId, ct);
 
         await writer.WriteAsync(entity.CasePositiveSpecimenInterval, NpgsqlDbType.Text, ct);
         await writer.WriteAsync(entity.CaseOnsetInterval, NpgsqlDbType.Text, ct);
 
-        await WriteNullable(writer, entity.ProcessId, NpgsqlDbType.Integer, ct);
-        await WriteNullable(writer, entity.ExposureYnId, NpgsqlDbType.Integer, ct);
-        await WriteNullable(writer, entity.CurrentStatusId, NpgsqlDbType.Integer, ct);
-        await WriteNullable(writer, entity.SymptomStatusId, NpgsqlDbType.Integer, ct);
-        await WriteNullable(writer, entity.HospYnId, NpgsqlDbType.Integer, ct);
-        await WriteNullable(writer, entity.IcuYnId, NpgsqlDbType.Integer, ct);
-        await WriteNullable(writer, entity.DeathYnId, NpgsqlDbType.Integer, ct);
-        await WriteNullable(writer, entity.UnderlyingConditionsYnId, NpgsqlDbType.Integer, ct);
+        await WriteNullableInt(writer, entity.ProcessId, ct);
+        await WriteNullableInt(writer, entity.ExposureYnId, ct);
+        await WriteNullableInt(writer, entity.CurrentStatusId, ct);
+        await WriteNullableInt(writer, entity.SymptomStatusId, ct);
+        await WriteNullableInt(writer, entity.HospYnId, ct);
+        await WriteNullableInt(writer, entity.IcuYnId, ct);
+        await WriteNullableInt(writer, entity.DeathYnId, ct);
+        await WriteNullableInt(writer, entity.UnderlyingConditionsYnId, ct);
     }
 
-    static async Task WriteNullable(NpgsqlBinaryImporter writer, object? val, NpgsqlDbType type, CancellationToken ct)
+    static Task WriteNullableInt(NpgsqlBinaryImporter writer, int? val, CancellationToken ct)
     {
-        if (val == null)
+        if (!val.HasValue)
         {
-            await writer.WriteNullAsync(ct);
+            return writer.WriteNullAsync(ct);
         }
         else
         {
-            await writer.WriteAsync(val, type, ct);
+            return writer.WriteAsync(val.Value, NpgsqlDbType.Integer, ct);
         }
     }
 
@@ -172,12 +181,12 @@ public class PgCopy : IPersistCases
         }
     }
 
-    private RawRow ReadRawLine(StreamReader csv)
-    {
-        string line = csv.ReadLine()
-                      ?? throw new Exception("Unexpected end of file.");
-        var rawRow = new RawRow();
-        rawRow.Load(line);
-        return rawRow;
-    }
+    // private RawRow ReadRawLine(StreamReader csv)
+    // {
+    //     string line = csv.ReadLine()
+    //                   ?? throw new Exception("Unexpected end of file.");
+    //     var rawRow = new RawRow();
+    //     rawRow.Load(line);
+    //     return rawRow;
+    // }
 }

@@ -12,6 +12,7 @@ public interface IPersistCases
     /// </summary>
     Task End(CancellationToken ct);
 
+    Task Persist(CovidCase entity, CancellationToken ct = default);
     Task Persist(IEnumerable<CovidCase> entities, CancellationToken ct);
     Task Persist(StreamReader reader, ImportConfig config, CancellationToken ct);
 }

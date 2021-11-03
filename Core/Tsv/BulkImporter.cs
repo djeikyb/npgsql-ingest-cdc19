@@ -32,7 +32,12 @@ namespace Core.Tsv
         public static CovidCase RawToEntity(RawRow row, PreKnowns preKnowns)
         {
             var entity = new CovidCase();
+            RowToEntity(row, preKnowns, entity);
+            return entity;
+        }
 
+        public static void RowToEntity(RawRow row, PreKnowns preKnowns, CovidCase entity)
+        {
             entity.CaseMonth = row.CaseMonth;
             entity.ResState = row.ResState;
             entity.StateFipsCode = row.StateFipsCode;
@@ -101,8 +106,6 @@ namespace Core.Tsv
             {
                 entity.UnderlyingConditionsYnId = preKnowns.Yn[row.UnderlyingConditionsYn].YnId;
             }
-
-            return entity;
         }
 
         public async Task Load(int maxBatchSize, int maxInserts, CancellationToken ct = default)
@@ -129,9 +132,10 @@ namespace Core.Tsv
 
                 // Console.WriteLine($"Batch #{batchNumber,5}. Total inserts: {total,9}. Batch size: {maxBatchSize}. Seconds: {t.Elapsed.TotalSeconds}");
 
-                if (total % 100_000 == 0)
+                var printEvery = 100_000;
+                if (total % printEvery == 0)
                 {
-                    Console.WriteLine($"100_000 records took {hundrThou.Elapsed.ToString()}");
+                    Console.WriteLine($"{printEvery} records took {hundrThou.Elapsed.ToString()}");
                     hundrThou.Reset();
                     hundrThou.Start();
                 }

@@ -38,7 +38,7 @@ public class RoughDraft
         {
             rawRow.LoadV2(line);
             BulkImporter.RowToEntity(rawRow, _preKnowns, entity);
-            await _perst.Persist(entity, ct);
+            await _perst.Persist(entity, ct).ConfigureAwait(false);
             total += 1;
 
             if (total % printEvery == 0)

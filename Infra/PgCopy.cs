@@ -1,6 +1,4 @@
 using System.Diagnostics;
-using System.Drawing.Imaging;
-using System.Text;
 using Core;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
@@ -35,9 +33,10 @@ public class PgCopyV2 : IPersistCases, IDisposable
         await _writer.CompleteAsync(ct);
     }
 
-    public Task Persist(CovidCase entity, CancellationToken ct = default)
+    public async Task Persist(CovidCase entity, CancellationToken ct)
     {
-        return PgCopy.WriteRow(_writer!, entity, ct);
+        // if (_writer == null) throw new Exception();
+        await PgCopy.WriteRow(_writer!, entity, ct).ConfigureAwait(false);
     }
 
     public async Task Persist(IEnumerable<CovidCase> entities, CancellationToken ct = default)
@@ -123,30 +122,30 @@ public class PgCopy : IPersistCases
 
     public static async Task WriteRow(NpgsqlBinaryImporter writer, CovidCase entity, CancellationToken ct)
     {
-        await writer.StartRowAsync(ct);
+        await writer.StartRowAsync(ct).ConfigureAwait(false);
 
-        await writer.WriteAsync(entity.CaseMonth, NpgsqlDbType.Text, ct);
-        await writer.WriteAsync(entity.ResState, NpgsqlDbType.Text, ct);
-        await writer.WriteAsync(entity.StateFipsCode, NpgsqlDbType.Text, ct);
-        await writer.WriteAsync(entity.ResCounty, NpgsqlDbType.Text, ct);
-        await writer.WriteAsync(entity.CountyFipsCode, NpgsqlDbType.Text, ct);
+        await writer.WriteAsync(entity.CaseMonth, NpgsqlDbType.Text, ct).ConfigureAwait(false);
+        await writer.WriteAsync(entity.ResState, NpgsqlDbType.Text, ct).ConfigureAwait(false);
+        await writer.WriteAsync(entity.StateFipsCode, NpgsqlDbType.Text, ct).ConfigureAwait(false);
+        await writer.WriteAsync(entity.ResCounty, NpgsqlDbType.Text, ct).ConfigureAwait(false);
+        await writer.WriteAsync(entity.CountyFipsCode, NpgsqlDbType.Text, ct).ConfigureAwait(false);
 
-        await WriteNullableInt(writer, entity.AgeGroupId, ct);
-        await WriteNullableInt(writer, entity.SexId, ct);
-        await WriteNullableInt(writer, entity.RaceId, ct);
-        await WriteNullableInt(writer, entity.EthnicityId, ct);
+        await WriteNullableInt(writer, entity.AgeGroupId, ct).ConfigureAwait(false);
+        await WriteNullableInt(writer, entity.SexId, ct).ConfigureAwait(false);
+        await WriteNullableInt(writer, entity.RaceId, ct).ConfigureAwait(false);
+        await WriteNullableInt(writer, entity.EthnicityId, ct).ConfigureAwait(false);
 
-        await writer.WriteAsync(entity.CasePositiveSpecimenInterval, NpgsqlDbType.Text, ct);
-        await writer.WriteAsync(entity.CaseOnsetInterval, NpgsqlDbType.Text, ct);
+        await writer.WriteAsync(entity.CasePositiveSpecimenInterval, NpgsqlDbType.Text, ct).ConfigureAwait(false);
+        await writer.WriteAsync(entity.CaseOnsetInterval, NpgsqlDbType.Text, ct).ConfigureAwait(false);
 
-        await WriteNullableInt(writer, entity.ProcessId, ct);
-        await WriteNullableInt(writer, entity.ExposureYnId, ct);
-        await WriteNullableInt(writer, entity.CurrentStatusId, ct);
-        await WriteNullableInt(writer, entity.SymptomStatusId, ct);
-        await WriteNullableInt(writer, entity.HospYnId, ct);
-        await WriteNullableInt(writer, entity.IcuYnId, ct);
-        await WriteNullableInt(writer, entity.DeathYnId, ct);
-        await WriteNullableInt(writer, entity.UnderlyingConditionsYnId, ct);
+        await WriteNullableInt(writer, entity.ProcessId, ct).ConfigureAwait(false);
+        await WriteNullableInt(writer, entity.ExposureYnId, ct).ConfigureAwait(false);
+        await WriteNullableInt(writer, entity.CurrentStatusId, ct).ConfigureAwait(false);
+        await WriteNullableInt(writer, entity.SymptomStatusId, ct).ConfigureAwait(false);
+        await WriteNullableInt(writer, entity.HospYnId, ct).ConfigureAwait(false);
+        await WriteNullableInt(writer, entity.IcuYnId, ct).ConfigureAwait(false);
+        await WriteNullableInt(writer, entity.DeathYnId, ct).ConfigureAwait(false);
+        await WriteNullableInt(writer, entity.UnderlyingConditionsYnId, ct).ConfigureAwait(false);
     }
 
     static Task WriteNullableInt(NpgsqlBinaryImporter writer, int? val, CancellationToken ct)

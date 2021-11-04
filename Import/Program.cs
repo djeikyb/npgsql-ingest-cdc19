@@ -50,6 +50,6 @@ var importer = new Core.v3.RoughDraft(preKnowns, repo);
 
 var t = new Stopwatch();
 t.Start();
-await importer.Load(reader, maxBatchSize: 1_000_000, maxInserts: 5_00_000, ct: ct);
+await importer.Load(reader, maxBatchSize: 1_000_000, maxInserts: 5_000_000, ct: ct);
 t.Stop();
 Console.WriteLine($"Overall time: {t.Elapsed.ToString()}");

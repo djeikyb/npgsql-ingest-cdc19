@@ -2,14 +2,14 @@ namespace Core.Tsv;
 
 public class PreKnowns
 {
-    public Dictionary<string, AgeGroup> AgeGroup;
-    public Dictionary<string, CurrentStatus> CurrentStatus;
-    public Dictionary<string, Ethnicity> Ethnicity;
-    public Dictionary<string, Process> Process;
-    public Dictionary<string, Race> Race;
-    public Dictionary<string, Sex> Sex;
-    public Dictionary<string, SymptomStatus> SymptomStatus;
-    public Dictionary<string, Yn> Yn;
+    public readonly Dictionary<string, AgeGroup> AgeGroup;
+    public readonly Dictionary<string, CurrentStatus> CurrentStatus;
+    public readonly Dictionary<string, Ethnicity> Ethnicity;
+    public readonly Dictionary<string, Process> Process;
+    public readonly Dictionary<string, Race> Race;
+    public readonly Dictionary<string, Sex> Sex;
+    public readonly Dictionary<string, SymptomStatus> SymptomStatus;
+    public readonly Dictionary<string, Yn> Yn;
 
     public PreKnowns(
         Dictionary<string, AgeGroup> ageGroup,

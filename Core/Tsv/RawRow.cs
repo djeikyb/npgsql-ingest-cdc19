@@ -2,7 +2,7 @@ namespace Core.Tsv;
 
 public class RawRow
 {
-    public void LoadV2(string row)
+    private void LoadV2(string row)
     {
         const char delim = '\t';
         int pos = 0;
@@ -82,7 +82,7 @@ public class RawRow
         }
     }
 
-    public void Load(string row)
+    private void Load(string row)
     {
         var col = row.Split("\t");
         CaseMonth = col[0];

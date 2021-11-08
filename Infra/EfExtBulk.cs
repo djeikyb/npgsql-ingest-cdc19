@@ -1,4 +1,5 @@
 using Core;
+using Core.Tsv;
 
 namespace Infra;
 
@@ -17,7 +18,7 @@ public class EfExtBulk : IPersistCases
 
     public async Task Persist(IEnumerable<CovidCase> cases, CancellationToken ct)
     {
-        await _context.BulkInsertAsync(cases, ct);
+        await _context.BulkInsertAsync(cases, ct).ConfigureAwait(false);
     }
 
     public Task Persist(StreamReader reader, ImportConfig config, CancellationToken ct)

@@ -40,7 +40,7 @@ public class BulkImporter
         var hundrThou = new Stopwatch();
         hundrThou.Start();
 
-        await _repo.Begin(ct);
+        await _repo.BeginAsync(ct);
 
         int total = 0;
         int batchNumber = 1;
@@ -69,7 +69,7 @@ public class BulkImporter
             batchNumber += 1;
         }
 
-        await _repo.End(ct);
+        await _repo.EndAsync(ct);
     }
 
     private async Task<(int Inserted, bool NoMoreData)> Batch(int batchSize, CancellationToken ct)
@@ -94,7 +94,7 @@ public class BulkImporter
             entities.Add(entity);
         }
 
-        await _repo.Persist(entities, ct);
+        await _repo.PersistAsync(entities, ct);
 
         return (Inserted: inserts, NoMoreData: eof);
     }
@@ -109,6 +109,6 @@ public class BulkImporter
             entities.Add(entity);
         }
 
-        await _repo.Persist(entities, ct);
+        await _repo.PersistAsync(entities, ct);
     }
 }

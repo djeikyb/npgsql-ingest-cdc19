@@ -99,3 +99,75 @@ cols += "hosp_yn_id";
 cols += "icu_yn_id";
 cols += "death_yn_id";
 cols += "underlying_conditions_yn_id";
+
+
+
+4. SpanRowParser
+
+        var pb4 = new Playbook(
+            new SpanRowParser(),
+            new PgCopy(context),
+            new Core.Tsv.v3.RoughDraft(),
+            config
+        );
+
+1,950.1 MB (max: 1,950.1 MB) by RawRow.AssignField (allocated type: String)
+755.5 MB (max: 755.5 MB) by RoughDraft.Import (allocated type: String)
+542.6 MB (max: 542.6 MB) by RawRow.AssignField (allocated type: String)
+444.6 MB (max: 444.6 MB) by RawRow.AssignField (allocated type: String)
+214.5 MB (max: 214.5 MB) by RoughDraft.Import (allocated type: String)
+208.6 MB (max: 208.6 MB) by PgCopy.Persist (allocated type: <WriteRow>d__8)
+199.4 MB (max: 199.4 MB) by RoughDraft.Import (allocated type: <Persist>d__6)
+169.7 MB (max: 169.7 MB) by RoughDraft.Import (allocated type: String)
+129.2 MB (max: 129.2 MB) by RoughDraft.Import (allocated type: Char[])
+115.3 MB (max: 115.3 MB) by RoughDraft.Import (allocated type: String)
+
+All AssignField stacktraces are:
+
+at String.Ctor(ReadOnlySpan)
+at RawRow.AssignField(ReadOnlySpan) in /Users/jacob/dev/me/active/cdc19/Core/Tsv/RawRow.cs:line 17 column 13
+at SpanRowParser.Parse(String, RawRow) in /Users/jacob/dev/me/active/cdc19/Core/Tsv/RowParser/SpanRowParser.cs:line 8 column 9
+at RoughDraft.Import(Stream, Playbook, PreKnowns, CancellationToken) in /Users/jacob/dev/me/active/cdc19/Core/Tsv/v3/RoughDraft.cs:line 40 column 13
+at ExecutionContext.RunInternal(ExecutionContext, ContextCallback, Object)
+at AsyncTaskMethodBuilder+AsyncStateMachineBox<VoidTaskResult,StartupHook+<ReceiveDeltas>d__3>.MoveNext(Thread)
+at AwaitTaskContinuation.RunOrScheduleAction(IAsyncStateMachineBox, bool)
+at Task.RunContinuations(Object)
+at AsyncTaskMethodBuilder.SetResult()
+at PgCopy.Persist(CovidCase, CancellationToken)
+at ExecutionContext.RunInternal(ExecutionContext, ContextCallback, Object)
+at AsyncTaskMethodBuilder+AsyncStateMachineBox<VoidTaskResult,StartupHook+<ReceiveDeltas>d__3>.MoveNext(Thread)
+at AwaitTaskContinuation.RunOrScheduleAction(IAsyncStateMachineBox, bool)
+at Task.RunContinuations(Object)
+at AsyncTaskMethodBuilder.SetResult()
+at PgCopy.WriteRow(NpgsqlBinaryImporter, CovidCase, CancellationToken)
+at ExecutionContext.RunInternal(ExecutionContext, ContextCallback, Object)
+at AsyncTaskMethodBuilder+AsyncStateMachineBox<VoidTaskResult,StartupHook+<ReceiveDeltas>d__3>.MoveNext(Thread)
+at AwaitTaskContinuation.RunOrScheduleAction(IAsyncStateMachineBox, bool)
+at Task.RunContinuations(Object)
+at Task<__Canon>.TrySetResult()
+at NpgsqlBinaryImporter+<Write>d__29<__Canon>.MoveNext()
+at ExecutionContext.RunInternal(ExecutionContext, ContextCallback, Object)
+at AsyncTaskMethodBuilder+AsyncStateMachineBox<VoidTaskResult,StartupHook+<ReceiveDeltas>d__3>.MoveNext(Thread)
+at AwaitTaskContinuation.RunOrScheduleAction(IAsyncStateMachineBox, bool)
+at Task.RunContinuations(Object)
+at Task<__Canon>.TrySetResult()
+at AsyncTaskMethodBuilder<__Canon>.SetExistingTaskResult(Task, )
+at NpgsqlTypeHandler+<WriteWithLength>d__14<Int32>.MoveNext()
+at ExecutionContext.RunInternal(ExecutionContext, ContextCallback, Object)
+at AsyncTaskMethodBuilder+AsyncStateMachineBox<VoidTaskResult,StartupHook+<ReceiveDeltas>d__3>.MoveNext(Thread)
+at AwaitTaskContinuation.RunOrScheduleAction(IAsyncStateMachineBox, bool)
+at Task.RunContinuations(Object)
+at Task<__Canon>.TrySetResult()
+at NpgsqlWriteBuffer.Flush(bool, CancellationToken)
+at ExecutionContext.RunInternal(ExecutionContext, ContextCallback, Object)
+at AwaitTaskContinuation.RunOrScheduleAction(IAsyncStateMachineBox, bool)
+at Task.RunContinuations(Object)
+at Socket+AwaitableSocketAsyncEventArgs.InvokeContinuation(Action, Object, bool, bool)
+at SocketAsyncEngine.System.Threading.IThreadPoolWorkItem.Execute()
+at ThreadPoolWorkQueue.Dispatch()
+at PortableThreadPool+WorkerThread.WorkerThreadStart()
+at Thread+StartHelper.RunWorker()
+at Thread+StartHelper.Run()
+at Thread.StartCallback()
+
+

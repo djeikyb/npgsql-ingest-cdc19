@@ -16,7 +16,7 @@ public class RoughDraft : IBulkImporter
     {
         var maxInserts = playbook.Config.RecordsMax;
 
-        await playbook.Repo.Begin(ct).ConfigureAwait(false);
+        await playbook.Repo.BeginAsync(ct).ConfigureAwait(false);
 
         using var reader = new StreamReader(tsv);
 
@@ -39,7 +39,7 @@ public class RoughDraft : IBulkImporter
         {
             playbook.RowParser.Parse(line, rawRow);
             RowEntityMapper.RowToEntity(rawRow, preKnowns, entity);
-            await playbook.Repo.Persist(entity, ct).ConfigureAwait(false);
+            await playbook.Repo.PersistAsync(entity, ct).ConfigureAwait(false);
             total += 1;
 
             if (total % printEvery == 0)
@@ -50,7 +50,7 @@ public class RoughDraft : IBulkImporter
             }
         }
 
-        await playbook.Repo.End(ct).ConfigureAwait(false);
+        await playbook.Repo.EndAsync(ct).ConfigureAwait(false);
     }
 
     /// <inheritdoc />

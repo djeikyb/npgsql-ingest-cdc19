@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infra", "Infra\Infra.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{749F9EF9-2E85-4FE5-A141-7E58FD785C01}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{4109EDDB-F476-4094-B532-F2F2695F2BAB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bench", "Bench\Bench.csproj", "{8F81D7AC-BB66-40E1-9A69-1C677A2D35B5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +34,13 @@ Global
 		{749F9EF9-2E85-4FE5-A141-7E58FD785C01}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{749F9EF9-2E85-4FE5-A141-7E58FD785C01}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{749F9EF9-2E85-4FE5-A141-7E58FD785C01}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4109EDDB-F476-4094-B532-F2F2695F2BAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4109EDDB-F476-4094-B532-F2F2695F2BAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4109EDDB-F476-4094-B532-F2F2695F2BAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4109EDDB-F476-4094-B532-F2F2695F2BAB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F81D7AC-BB66-40E1-9A69-1C677A2D35B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F81D7AC-BB66-40E1-9A69-1C677A2D35B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F81D7AC-BB66-40E1-9A69-1C677A2D35B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F81D7AC-BB66-40E1-9A69-1C677A2D35B5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

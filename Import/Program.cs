@@ -69,6 +69,12 @@ public class Program
             PrintEverySoOften = 100_000,
         };
 
+        // config = new ImportConfig
+        // {
+        //     RecordsMax = 5_000,
+        //     PrintEverySoOften = 1_000,
+        // };
+
         var pb1 = new Playbook(
             new SplitStringRowParser(),
             new EfExtBulk(context),
@@ -91,21 +97,24 @@ public class Program
         );
 
         var pb4 = new Playbook(
-            new SubstrRowParser(),
+            new SpanRowParser(),
             new PgCopy(context),
-            new Core.Tsv.v4.Next(),
-            new ImportConfig
-            {
-                RecordsMax = 5_000_000,
-                BatchSizeMax = 1_000_000,
-                PrintEverySoOften = 100_000,
-            }
+            new Core.Tsv.v3.RoughDraft(),
+            config
+        );
+
+        var pb5 = new Playbook(
+            new SpanRowParser(),
+            new PgCopy(context),
+            new Core.Tsv.v4.SyncImporter(),
+            config
         );
 
         // var playbook = pb1;
         // var playbook = pb2;
         // var playbook = pb3;
-        var playbook = pb4;
+        // var playbook = pb4;
+        var playbook = pb5;
 
         await playbook.Run(fs, preKnowns, ct);
     }

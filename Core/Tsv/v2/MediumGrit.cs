@@ -21,7 +21,7 @@ public class MediumGrit : IBulkImporter
         // skip header
         reader.ReadLine();
 
-        await playbook.Repo.Begin(ct);
+        await playbook.Repo.BeginAsync(ct);
 
 
         var printEvery = playbook.Config.PrintEverySoOften;
@@ -40,7 +40,7 @@ public class MediumGrit : IBulkImporter
         {
             playbook.RowParser.Parse(line, rawRow);
             var entity = RowEntityMapper.RawToEntity(rawRow, preKnowns);
-            await playbook.Repo.Persist(entity, ct);
+            await playbook.Repo.PersistAsync(entity, ct);
 
             total += 1;
 
@@ -52,7 +52,7 @@ public class MediumGrit : IBulkImporter
             }
         }
 
-        await playbook.Repo.End(ct);
+        await playbook.Repo.EndAsync(ct);
     }
 
     /// <inheritdoc />

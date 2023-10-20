@@ -5,14 +5,20 @@ public interface IPersistCases
     /// <summary>
     /// May return Task.CompletedTask
     /// </summary>
-    Task Begin(CancellationToken ct);
+    Task BeginAsync(CancellationToken ct);
 
     /// <summary>
     /// May return Task.CompletedTask
     /// </summary>
-    Task End(CancellationToken ct);
+    Task EndAsync(CancellationToken ct);
 
-    Task Persist(CovidCase entity, CancellationToken ct);
-    Task Persist(IEnumerable<CovidCase> entities, CancellationToken ct);
-    Task Persist(StreamReader reader, ImportConfig config, CancellationToken ct);
+    void Begin();
+    void End();
+
+    Task PersistAsync(CovidCase entity, CancellationToken ct);
+    Task PersistAsync(IEnumerable<CovidCase> entities, CancellationToken ct);
+    Task PersistAsync(StreamReader reader, ImportConfig config, CancellationToken ct);
+
+    void Persist(CovidCase entity);
+    void Persist(IEnumerable<CovidCase> entities, CancellationToken ct);
 }

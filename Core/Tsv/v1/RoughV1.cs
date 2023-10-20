@@ -40,7 +40,7 @@ public class RoughV1 : IBulkImporter
         // skip header
         reader.ReadLine();
 
-        await playbook.Repo.Begin(ct);
+        await playbook.Repo.BeginAsync(ct);
 
         // number of entities that have been OR WILL BE saved
         int total = 0;
@@ -72,7 +72,7 @@ public class RoughV1 : IBulkImporter
             // O(1) operation? But this is definitely O(1).
             if (total % maxBatchSize == 0)
             {
-                await playbook.Repo.Persist(entities, ct);
+                await playbook.Repo.PersistAsync(entities, ct);
                 entities = new List<CovidCase>(maxBatchSize);
             }
 
@@ -88,10 +88,10 @@ public class RoughV1 : IBulkImporter
         // last quantity of lines is less than the batch size?
         if (entities.Count > 0)
         {
-            await playbook.Repo.Persist(entities, ct);
+            await playbook.Repo.PersistAsync(entities, ct);
         }
 
-        await playbook.Repo.End(ct);
+        await playbook.Repo.EndAsync(ct);
     }
 
     /// <inheritdoc />
